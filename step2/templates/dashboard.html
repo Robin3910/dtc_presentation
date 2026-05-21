@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - AI 素材审核助手</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #09090b;
+            --bg-secondary: #18181b;
+            --bg-tertiary: #27272a;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(255, 255, 255, 0.06);
+            
+            --border-primary: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            
+            --accent-cyan: #22d3ee;
+            --accent-cyan-glow: rgba(34, 211, 238, 0.3);
+            --accent-violet: #a78bfa;
+            --accent-violet-glow: rgba(167, 139, 250, 0.3);
+            --accent-green: #4ade80;
+            --accent-yellow: #facc15;
+            --accent-red: #f87171;
+            
+            --gradient-primary: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            
+            --header-height: 64px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: rgba(9, 9, 11, 0.8);
+            border-bottom: 1px solid var(--border-primary);
+            backdrop-filter: blur(16px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+        }
+
+        .nav {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--accent-cyan);
+        }
+
+        .header-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .scheduler-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .scheduler-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+        }
+
+        .scheduler-dot.running {
+            background: var(--accent-green);
+            box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 16px;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        /* Main */
+        .main {
+            padding-top: calc(var(--header-height) + 32px);
+            padding-bottom: 48px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-left: 24px;
+            padding-right: 24px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Bento Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .bento-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .bento-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .bento-card.stat-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bento-card.stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: var(--gradient-primary);
+            opacity: 0.05;
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .stat-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .stat-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            color: var(--accent-cyan);
+        }
+
+        /* Large Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .card-link {
+            font-size: 0.875rem;
+            color: var(--accent-cyan);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .card-link:hover {
+            opacity: 0.8;
+        }
+
+        .card-body {
+            padding: 0;
+        }
+
+        /* Table */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            text-align: left;
+            padding: 12px 24px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .table td {
+            padding: 16px 24px;
+            font-size: 0.875rem;
+            border-bottom: 1px solid var(--border-primary);
+            color: var(--text-secondary);
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tr:hover td {
+            background: var(--bg-card);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: rgba(74, 222, 128, 0.1);
+            color: var(--accent-green);
+        }
+
+        .badge-warning {
+            background: rgba(250, 204, 21, 0.1);
+            color: var(--accent-yellow);
+        }
+
+        .badge-danger {
+            background: rgba(248, 113, 113, 0.1);
+            color: var(--accent-red);
+        }
+
+        .badge-info {
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--accent-cyan);
+        }
+
+        .badge-default {
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+        }
+
+        /* Review Distribution */
+        .distribution-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            padding: 24px;
+        }
+
+        .distribution-item {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            transition: all 0.2s ease;
+        }
+
+        .distribution-item:hover {
+            transform: scale(1.02);
+        }
+
+        .distribution-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .distribution-item.pass .distribution-value {
+            color: var(--accent-green);
+        }
+
+        .distribution-item.revision .distribution-value {
+            color: var(--accent-yellow);
+        }
+
+        .distribution-item.reject .distribution-value {
+            color: var(--accent-red);
+        }
+
+        .distribution-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .bento-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0 16px;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .main {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .distribution-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table th,
+            .table td {
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#22d3ee"/>
+                                <stop offset="100%" stop-color="#a78bfa"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                AI 审核助手
+            </a>
+            <nav class="nav">
+                <a href="/admin" class="nav-link active">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"/>
+                        <rect x="14" y="3" width="7" height="7"/>
+                        <rect x="14" y="14" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/>
+                    </svg>
+                    概览
+                </a>
+                <a href="/admin/materials" class="nav-link">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                        <polyline points="13 2 13 9 20 9"/>
+                    </svg>
+                    素材管理
+                </a>
+                <a href="/admin/reviews" class="nav-link">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    审核记录
+                </a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="scheduler-badge">
+                <span class="scheduler-dot" id="scheduler-dot"></span>
+                <span id="scheduler-text">调度器未启动</span>
+            </div>
+            <button class="btn btn-secondary" id="refresh-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="23 4 23 10 17 10"/>
+                    <polyline points="1 20 1 14 7 14"/>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                </svg>
+                刷新
+            </button>
+            <button class="btn btn-secondary" id="logout-btn">退出</button>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="page-header">
+            <h1 class="page-title">数据概览</h1>
+        </div>
+
+        <!-- Stats Bento Grid -->
+        <div class="bento-grid">
+            <div class="bento-card stat-card">
+                <div class="stat-label">总素材数</div>
+                <div class="stat-value" id="total-materials">--</div>
+                <div class="stat-sub">全部素材</div>
+                <div class="stat-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="bento-card stat-card">
+                <div class="stat-label">今日上传</div>
+                <div class="stat-value" id="today-uploads">--</div>
+                <div class="stat-sub">新增素材</div>
+                <div class="stat-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="bento-card stat-card">
+                <div class="stat-label">今日审核</div>
+                <div class="stat-value" id="today-reviews">--</div>
+                <div class="stat-sub">已完成</div>
+                <div class="stat-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="bento-card stat-card">
+                <div class="stat-label">待审核</div>
+                <div class="stat-value" id="pending-count">--</div>
+                <div class="stat-sub">等待处理</div>
+                <div class="stat-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="card-grid">
+            <!-- Review Distribution -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">审核结果分布</h2>
+                </div>
+                <div class="distribution-grid">
+                    <div class="distribution-item pass">
+                        <div class="distribution-value" id="pass-count">--</div>
+                        <div class="distribution-label">通过</div>
+                    </div>
+                    <div class="distribution-item revision">
+                        <div class="distribution-value" id="revision-count">--</div>
+                        <div class="distribution-label">需修改</div>
+                    </div>
+                    <div class="distribution-item reject">
+                        <div class="distribution-value" id="reject-count">--</div>
+                        <div class="distribution-label">违规</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Materials -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">最近上传</h2>
+                    <a href="/admin/materials" class="card-link">查看全部 →</a>
+                </div>
+                <div class="card-body" id="recent-materials">
+                    <div class="empty-state">
+                        <div class="empty-icon">📁</div>
+                        <p>暂无素材</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Reviews -->
+        <div class="card" style="margin-top: 20px;">
+            <div class="card-header">
+                <h2 class="card-title">最近审核记录</h2>
+                <a href="/admin/reviews" class="card-link">查看全部 →</a>
+            </div>
+            <div class="card-body" id="recent-reviews">
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <p>暂无审核记录</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const schedulerDot = document.getElementById('scheduler-dot');
+        const schedulerText = document.getElementById('scheduler-text');
+        const refreshBtn = document.getElementById('refresh-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        async function loadStatistics() {
+            try {
+                const response = await fetch('/api/statistics');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const stats = data.statistics;
+                    
+                    document.getElementById('total-materials').textContent = stats.total_materials || 0;
+                    document.getElementById('today-uploads').textContent = stats.today_uploads || 0;
+                    document.getElementById('today-reviews').textContent = stats.today_reviews || 0;
+                    document.getElementById('pass-count').textContent = stats.review_counts?.pass || 0;
+                    document.getElementById('revision-count').textContent = stats.review_counts?.needs_revision || 0;
+                    document.getElementById('reject-count').textContent = stats.review_counts?.reject || 0;
+                    
+                    const pending = stats.status_counts?.uploaded || 0;
+                    document.getElementById('pending-count').textContent = pending;
+                }
+            } catch (error) {
+                console.error('加载统计数据失败:', error);
+            }
+        }
+
+        async function loadSchedulerStatus() {
+            try {
+                const response = await fetch('/api/scheduler/status');
+                const data = await response.json();
+                
+                if (data.running) {
+                    schedulerDot.classList.add('running');
+                    schedulerText.textContent = `运行中 · ${data.pending_count || 0} 个待审核`;
+                } else {
+                    schedulerDot.classList.remove('running');
+                    schedulerText.textContent = '调度器未启动';
+                }
+            } catch (error) {
+                console.error('加载调度器状态失败:', error);
+            }
+        }
+
+        async function loadRecentReviews() {
+            try {
+                const response = await fetch('/api/reviews?per_page=5');
+                const data = await response.json();
+                
+                const container = document.getElementById('recent-reviews');
+                
+                if (data.reviews && data.reviews.length > 0) {
+                    let html = `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>文件名</th>
+                                    <th>上传者</th>
+                                    <th>审核结果</th>
+                                    <th>审核时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    data.reviews.forEach(review => {
+                        const badgeClass = review.reviewer_result === 'pass' ? 'badge-success' : 
+                                          review.reviewer_result === 'needs_revision' ? 'badge-warning' : 'badge-danger';
+                        const badgeText = review.reviewer_result === 'pass' ? '通过' :
+                                         review.reviewer_result === 'needs_revision' ? '需修改' : '违规';
+                        const date = new Date(review.review_time).toLocaleString('zh-CN');
+                        
+                        html += `
+                            <tr>
+                                <td>${review.filename}</td>
+                                <td>${review.uploader_email || '-'}</td>
+                                <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+                                <td>${date}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += '</tbody></table>';
+                    container.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('加载最近审核记录失败:', error);
+            }
+        }
+
+        async function loadRecentMaterials() {
+            try {
+                const response = await fetch('/api/materials?per_page=5');
+                const data = await response.json();
+                
+                const container = document.getElementById('recent-materials');
+                
+                if (data.materials && data.materials.length > 0) {
+                    let html = `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>文件名</th>
+                                    <th>上传者</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    data.materials.forEach(material => {
+                        const statusMap = {
+                            'pending': 'badge-default',
+                            'uploaded': 'badge-info',
+                            'reviewing': 'badge-warning',
+                            'reviewed': 'badge-success'
+                        };
+                        const statusBadgeClass = statusMap[material.status] || 'badge-default';
+                        const statusText = {
+                            'pending': '待处理',
+                            'uploaded': '已上传',
+                            'reviewing': '审核中',
+                            'reviewed': '已审核'
+                        }[material.status] || material.status;
+                        
+                        html += `
+                            <tr>
+                                <td>${material.original_filename}</td>
+                                <td>${material.uploader_email || '-'}</td>
+                                <td><span class="badge ${statusBadgeClass}">${statusText}</span></td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += '</tbody></table>';
+                    container.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('加载最近素材失败:', error);
+            }
+        }
+
+        refreshBtn.addEventListener('click', () => {
+            refreshBtn.style.opacity = '0.6';
+            loadStatistics();
+            loadSchedulerStatus();
+            loadRecentReviews();
+            loadRecentMaterials();
+            setTimeout(() => {
+                refreshBtn.style.opacity = '1';
+            }, 500);
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+                window.location.href = '/login';
+            } catch (error) {
+                window.location.href = '/login';
+            }
+        });
+
+        // Initialize
+        loadStatistics();
+        loadSchedulerStatus();
+        loadRecentReviews();
+        loadRecentMaterials();
+
+        // Auto refresh every 30s
+        setInterval(() => {
+            loadStatistics();
+            loadSchedulerStatus();
+        }, 30000);
+    </script>
+</body>
+</html>

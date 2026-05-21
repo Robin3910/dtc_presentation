@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 """
 配置文件：存放所有密钥和服务配置
 首次使用请填写以下配置项
 """
 
 import os
+import sys
 from pathlib import Path
 
 # ── 路径配置 ──────────────────────────────────────────────
@@ -11,11 +13,20 @@ BASE_DIR    = Path(__file__).parent
 MATERIALS_DIR = BASE_DIR / "materials"       # 达人素材存放目录
 REPORTS_DIR  = BASE_DIR / "reports"          # 生成的审核报告存放目录
 
-# ── Claude API 配置 ─────────────────────────────────────────
-# 优先使用环境变量 / 中转 API，备选官方直连
-CLAUDE_API_BASE_URL = os.getenv("ANTHROPIC_API_BASE_URL", "https://apinebula.com/v1")
-CLAUDE_API_KEY     = os.getenv("ANTHROPIC_API_KEY", "sk-7CsKSA3Mq3YWM78bjA7aa0guigOURdWQaQnFAM52JTNPWzzq")
-CLAUDE_MODEL       = "claude-sonnet-4-20250514"  # 或 claude-3-5-sonnet-latest
+# DeepSeek（推荐，便宜快速）：用于纯文本对话（不支持图片）
+# 视觉审核（带图）必须走 Claude
+DEEPSEEK_API_KEY     = os.getenv("DEEPSEEK_API_KEY", "sk-6e9ada949b7c420080e23976f2183128")
+DEEPSEEK_API_BASE    = os.getenv("DEEPSEEK_API_BASE", "https://api.deepseek.com")
+DEEPSEEK_MODEL       = os.getenv("DEEPSEEK_MODEL", "deepseek-chat")  # 仅文本，不支持图片
+
+# DMXAPI 中转站配置（用于图片分析）
+# 官网：https://doc.dmxapi.cn
+# API Key 优先级：环境变量 > 代码配置
+# 注意：base_url 只填域名，代码会自动拼接 /v1/messages
+DMXAPI_BASE_URL = os.getenv("DMXAPI_BASE_URL", "https://www.dmxapi.cn")
+DMXAPI_API_KEY  = os.getenv("DMXAPI_API_KEY", "sk-Zun61an7Wu5axwgj3LeodrHIWmw0OZVDGYkpvbfO4z8Wz7DN")
+
+CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "kimi-k2.6")
 
 # ── 邮件发送配置 ───────────────────────────────────────────
 # 支持两种模式：QQ 邮箱 / QQ 企业邮箱（exmail）

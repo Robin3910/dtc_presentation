@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>素材上传 - AI 素材审核助手</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #09090b;
+            --bg-secondary: #18181b;
+            --bg-tertiary: #27272a;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(255, 255, 255, 0.06);
+            
+            --border-primary: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            
+            --accent-cyan: #22d3ee;
+            --accent-cyan-glow: rgba(34, 211, 238, 0.3);
+            --accent-violet: #a78bfa;
+            --accent-violet-glow: rgba(167, 139, 250, 0.3);
+            
+            --gradient-primary: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
+            --gradient-bg: linear-gradient(180deg, #09090b 0%, #0c0c10 50%, #09090b 100%);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --shadow-glow: 0 0 40px var(--accent-cyan-glow);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-glow-1 {
+            top: -200px;
+            right: -100px;
+            background: var(--accent-cyan);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .bg-glow-2 {
+            bottom: -200px;
+            left: -100px;
+            background: var(--accent-violet);
+            animation: float 25s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, 30px); }
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .logo-wrapper {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-xl);
+            margin-bottom: 24px;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+
+        .logo-wrapper:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .logo-icon {
+            font-size: 32px;
+            filter: drop-shadow(0 0 8px var(--accent-cyan-glow));
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Card */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            backdrop-filter: blur(16px);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--border-hover);
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px var(--accent-cyan-glow);
+        }
+
+        input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Drop Zone */
+        .drop-zone {
+            position: relative;
+            border: 2px dashed var(--border-primary);
+            border-radius: var(--radius-lg);
+            padding: 48px 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-secondary);
+            overflow: hidden;
+        }
+
+        .drop-zone::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            border-color: var(--accent-cyan);
+            border-style: solid;
+        }
+
+        .drop-zone:hover::before,
+        .drop-zone.dragover::before {
+            opacity: 0.05;
+        }
+
+        .drop-zone-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .drop-zone-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.8;
+        }
+
+        .drop-zone-text {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .drop-zone-hint {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        /* File List */
+        .file-list {
+            margin-top: 16px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+            margin-bottom: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-icon {
+            font-size: 24px;
+        }
+
+        .file-name {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
+
+        .file-size {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .file-remove {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .file-remove:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 24px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: #fff;
+            box-shadow: 0 4px 16px var(--accent-cyan-glow);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--accent-cyan-glow);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Result Card */
+        .result-card {
+            margin-top: 24px;
+            padding: 20px 24px;
+            border-radius: var(--radius-lg);
+            display: none;
+        }
+
+        .result-card.show {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card.success {
+            background: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .result-card.error {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .result-icon {
+            font-size: 24px;
+        }
+
+        .result-content {
+            flex: 1;
+        }
+
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .result-card.success .result-title {
+            color: #4ade80;
+        }
+
+        .result-card.error .result-title {
+            color: #f87171;
+        }
+
+        .result-message {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-primary);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Admin Link */
+        .admin-link {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-lg);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .admin-link:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .container {
+                padding: 48px 16px;
+            }
+
+            .card {
+                padding: 24px 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .drop-zone {
+                padding: 32px 20px;
+            }
+
+            .stats-bar {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+
+            .stat-value {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <div class="container">
+        <header class="header">
+            <div class="logo-wrapper">
+                <svg class="logo-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#22d3ee"/>
+                            <stop offset="100%" stop-color="#a78bfa"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+            </div>
+            <h1>AI 素材审核助手</h1>
+            <p class="subtitle">上传创作素材，AI 自动进行品牌合规性审核</p>
+        </header>
+
+        <div class="card">
+            <form id="upload-form">
+                <div class="form-group">
+                    <label for="email">达人邮箱</label>
+                    <input type="email" id="email" name="email" placeholder="用于接收审核结果通知" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">达人昵称（选填）</label>
+                    <input type="text" id="name" name="name" placeholder="您的昵称或艺名">
+                </div>
+
+                <div class="form-group">
+                    <label>素材文件</label>
+                    <div class="drop-zone" id="drop-zone">
+                        <div class="drop-zone-content">
+                            <div class="drop-zone-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted)">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <polyline points="21 15 16 10 5 21"/>
+                                </svg>
+                            </div>
+                            <div class="drop-zone-text">拖拽文件到此处，或点击选择</div>
+                            <div class="drop-zone-hint">支持 PNG、JPG、GIF、WebP、MP4（单文件最大 50MB）</div>
+                        </div>
+                    </div>
+                    <input type="file" id="file-input" name="files" multiple accept=".png,.jpg,.jpeg,.gif,.webp,.mp4,.mov,.avi">
+                    <div class="file-list" id="file-list"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submit-btn" disabled>
+                    <span id="btn-text">上传并提交审核</span>
+                </button>
+
+                <button type="button" class="btn btn-secondary" id="clear-btn" style="display: none; margin-top: 12px;">
+                    清除已选文件
+                </button>
+            </form>
+
+            <div class="result-card" id="result-card">
+                <div class="result-icon" id="result-icon"></div>
+                <div class="result-content">
+                    <div class="result-title" id="result-text"></div>
+                    <div class="result-message" id="result-message"></div>
+                </div>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-value" id="uploaded-count">0</div>
+                    <div class="stat-label">已上传</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="reviewed-count">0</div>
+                    <div class="stat-label">已审核</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="pass-rate">--</div>
+                    <div class="stat-label">通过率</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="/admin" class="admin-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
+        </svg>
+        管理后台
+    </a>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const fileList = document.getElementById('file-list');
+        const uploadForm = document.getElementById('upload-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const btnText = document.getElementById('btn-text');
+        const clearBtn = document.getElementById('clear-btn');
+        const resultCard = document.getElementById('result-card');
+        const resultIcon = document.getElementById('result-icon');
+        const resultText = document.getElementById('result-text');
+        const resultMessage = document.getElementById('result-message');
+
+        let selectedFiles = [];
+
+        // Drop zone interactions
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            const allowedTypes = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'video/mp4', 'video/quicktime', 'video/x-msvideo'];
+            const maxSize = 50 * 1024 * 1024;
+
+            for (const file of files) {
+                if (!allowedTypes.includes(file.type)) {
+                    continue;
+                }
+                if (file.size > maxSize) {
+                    continue;
+                }
+                if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                    selectedFiles.push(file);
+                }
+            }
+
+            updateFileList();
+        }
+
+        function updateFileList() {
+            fileList.innerHTML = '';
+
+            if (selectedFiles.length === 0) {
+                submitBtn.disabled = true;
+                clearBtn.style.display = 'none';
+                return;
+            }
+
+            submitBtn.disabled = false;
+            clearBtn.style.display = 'flex';
+
+            selectedFiles.forEach((file, index) => {
+                const isImage = file.type.startsWith('image/');
+                const icon = isImage
+                    ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>'
+                    : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>';
+                const size = (file.size / 1024 / 1024).toFixed(2);
+
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `
+                    <div class="file-info">
+                        <div class="file-icon">${icon}</div>
+                        <div>
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-size">${size} MB</div>
+                        </div>
+                    </div>
+                    <button class="file-remove" onclick="removeFile(${index})">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                `;
+                fileList.appendChild(item);
+            });
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            updateFileList();
+        }
+
+        clearBtn.addEventListener('click', () => {
+            selectedFiles = [];
+            fileInput.value = '';
+            updateFileList();
+        });
+
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (selectedFiles.length === 0) return;
+
+            submitBtn.disabled = true;
+            btnText.innerHTML = '<span class="spinner"></span> 上传中...';
+
+            const formData = new FormData();
+            formData.append('email', document.getElementById('email').value);
+            formData.append('name', document.getElementById('name').value);
+
+            selectedFiles.forEach(file => {
+                formData.append('files', file);
+            });
+
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showResult('success', '上传成功', `成功上传 ${data.uploaded.length} 个文件，AI 审核已自动触发。`);
+                    selectedFiles = [];
+                    fileInput.value = '';
+                    updateFileList();
+
+                    const count = parseInt(document.getElementById('uploaded-count').textContent) + data.uploaded.length;
+                    document.getElementById('uploaded-count').textContent = count;
+                } else {
+                    showResult('error', '上传失败', data.message);
+                }
+            } catch (error) {
+                showResult('error', '上传失败', '网络错误，请稍后重试。');
+            }
+
+            submitBtn.disabled = false;
+            btnText.innerHTML = '上传并提交审核';
+        });
+
+        function showResult(type, title, message) {
+            resultCard.className = `result-card show ${type}`;
+            resultIcon.innerHTML = type === 'success'
+                ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+                : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+            resultIcon.style.color = type === 'success' ? '#4ade80' : '#f87171';
+            resultText.textContent = title;
+            resultMessage.textContent = message;
+
+            setTimeout(() => {
+                resultCard.classList.remove('show');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

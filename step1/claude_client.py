@@ -1,19 +1,27 @@
+# -*- coding: utf-8 -*-
 """
-Claude API 客户端：调用 Claude AI 对素材进行内容审核
+AI 审核客户端：用于达人素材图片的内容审核
+
+使用 DMXAPI 中转站调用 Claude 模型进行图片分析。
+DMXAPI 文档：https://doc.dmxapi.cn/claude-image.html
+
+优势：
+- 支持 OpenAI 兼容格式
+- 价格优惠
+- 稳定可靠
 """
 
 import base64
 import json
-import re
 import time
-import anthropic
+import requests
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Literal
 
 from config import (
-    CLAUDE_API_KEY,
-    CLAUDE_API_BASE_URL,
+    DMXAPI_API_KEY,
+    DMXAPI_BASE_URL,
     CLAUDE_MODEL,
     BRAND_RULES_FILE,
     REPORTS_DIR,
@@ -35,7 +43,7 @@ class ReviewResult:
 
 
 class ClaudeReviewer:
-    SYSTEM_PROMPT = """你是一位专业的品牌内容审核专家，专注于 DTC 联盟营销场景的达人素材审核。
+    SYSTEM_PROMPT = """你是一位专业的品牌内容审核专家，专注于vivo手机的达人素材审核。
 
 你的职责：
 1. 严格依据品牌规范，对达人提交的素材（图片/视频截图）进行合规性审核
@@ -51,16 +59,24 @@ class ClaudeReviewer:
 请用简体中文输出审核报告。"""
 
     def __init__(self):
-        self.client = anthropic.Anthropic(
-            api_key=CLAUDE_API_KEY,
-            base_url=CLAUDE_API_BASE_URL,  # 中转 API 地址
-        )
+        self.api_key = DMXAPI_API_KEY
+        # DMXAPI 服务地址（完整 URL）
+        self.base_url = DMXAPI_BASE_URL.rstrip("/")  # 移除末尾斜杠
         self.model = CLAUDE_MODEL
+        print(f"✅ 使用 DMXAPI + Claude 模型：{self.model}")
+        print(f"✅ API 地址：{self.base_url}")
+
         self.rules_text = BRAND_RULES_FILE.read_text(encoding="utf-8")
         self.reports_dir = REPORTS_DIR
         self.reports_dir.mkdir(exist_ok=True)
 
-    def _build_user_prompt(self, filename: str, base64_image: str) -> str:
+        # 请求头配置（与官方示例一致）
+        self.headers = {
+            "content-type": "application/json",  # 小写，与官方示例一致
+            "x-api-key": self.api_key,
+        }
+
+    def _build_user_prompt(self, filename: str) -> str:
         return f"""## 待审核素材
 
 素材文件名：{filename}
@@ -78,6 +94,8 @@ class ClaudeReviewer:
 ## 审核要求
 
 请仔细分析图片内容，逐一对照品牌规范进行合规性检查，并输出以下格式的审核报告：
+
+首先，要解释图片的内容是什么。包含了什么文字，图片的内容。
 
 ### 素材：{filename}
 
@@ -104,25 +122,36 @@ class ClaudeReviewer:
             return name_without_ext
         return ""
 
-    def _encode_image(self, image_path: Path) -> str:
-        """将图片编码为 base64（支持 PNG/JPG/GIF/WebP）"""
-        return base64.b64encode(image_path.read_bytes()).decode("utf-8")
+    def _get_image_media_type(self, file_path: Path) -> str:
+        """根据文件扩展名获取 MIME 类型"""
+        ext = file_path.suffix.lower()
+        media_types = {
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".png": "image/png",
+            ".gif": "image/gif",
+            ".webp": "image/webp",
+        }
+        return media_types.get(ext, "image/jpeg")
 
     def review_single(self, file_path: Path) -> ReviewResult:
-        """对单份素材进行 AI 审核"""
+        """对单份素材进行 AI 审核（使用 DMXAPI 中转站）"""
         filename = file_path.name
         email = self._extract_email_from_filename(filename)
 
         print(f"  正在审核：{filename} → {email or '未找到邮箱'}")
 
         try:
-            base64_image = self._encode_image(file_path)
+            # 读取图片并转为 base64
+            image_data = base64.b64encode(file_path.read_bytes()).decode('utf-8')
+            media_type = self._get_image_media_type(file_path)
 
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=2048,
-                system=self.SYSTEM_PROMPT,
-                messages=[
+            # 构建请求体（Anthropic Messages API 格式）
+            payload = {
+                "model": self.model,
+                "max_tokens": 2048,
+                "system": self.SYSTEM_PROMPT,
+                "messages": [
                     {
                         "role": "user",
                         "content": [
@@ -130,22 +159,41 @@ class ClaudeReviewer:
                                 "type": "image",
                                 "source": {
                                     "type": "base64",
-                                    "media_type": "image/png"
-                                               if file_path.suffix.lower() in [".png", ".gif", ".webp"]
-                                               else "image/jpeg",
-                                    "data": base64_image,
+                                    "media_type": media_type,
+                                    "data": image_data,
                                 },
                             },
                             {
                                 "type": "text",
-                                "text": self._build_user_prompt(filename, base64_image),
+                                "text": self._build_user_prompt(filename),
                             },
                         ],
                     }
                 ],
+            }
+
+            # 发送请求到 DMXAPI（官方示例格式）
+            response = requests.post(
+                f"{self.base_url}/v1/messages",
+                headers=self.headers,
+                json=payload,
+                timeout=240,  # 120秒超时，防止大图片分析时超时
             )
 
-            raw = response.content[0].text
+            # 处理响应
+            if response.status_code == 200:
+                result_data = response.json()
+                # DMXAPI 返回格式兼容 OpenAI/Anthropic
+                raw = result_data["content"][0]["text"]
+                # 打印模型回复内容到控制台
+                print(f"\n  🤖 模型回复：")
+                print("  " + "-" * 46)
+                for line in raw.split('\n'):
+                    print(f"  {line}")
+                print("  " + "-" * 46 + "\n")
+            else:
+                raise Exception(f"API 请求失败: {response.status_code} - {response.text}")
+
             return self._parse_response(filename, email, str(file_path), raw)
 
         except Exception as e:
@@ -164,7 +212,7 @@ class ClaudeReviewer:
     def _parse_response(
         self, filename: str, email: str, file_path: str, raw: str
     ) -> ReviewResult:
-        """从 Claude 回复中解析出结构化结果"""
+        """从回复中解析出结构化结果"""
         status = "pass"
         violations = []
         suggestions = []
@@ -305,6 +353,12 @@ class ClaudeReviewer:
                 f"- **违规条款：** {', '.join(r.violations) if r.violations else '无'}",
                 f"- **修改建议：** {', '.join(r.suggestions) if r.suggestions else '无'}",
                 f"- **备注：** {', '.join(r.notes) if r.notes else '无'}",
+                f"",
+                f"## AI 审核详情",
+                f"",
+                f"```",
+                r.raw_response,
+                f"```",
                 "",
                 "---",
                 "",

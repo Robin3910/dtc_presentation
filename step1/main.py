@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 AI 素材审核助手 · Step 1 轻量 Demo
 ====================================
@@ -94,18 +95,18 @@ def setup_argparse() -> argparse.Namespace:
 def check_config():
     """检查关键配置是否已填写"""
     from config import (
-        CLAUDE_API_KEY,
+        DMXAPI_API_KEY,
         SMTP_USER, SMTP_PASS,
         DEBUG_MODE,
     )
 
     errors = []
 
-    # Claude API Key 必须配置
-    if not CLAUDE_API_KEY or CLAUDE_API_KEY == "your-anthropic-api-key-here":
+    # DMXAPI Key 必须配置（图片审核必须用 Claude）
+    if not DMXAPI_API_KEY or DMXAPI_API_KEY.startswith("sk-your-"):
         errors.append(
-            "⚠️  CLAUDE_API_KEY 未配置\n"
-            "   请填写到 config.py 中，或设置环境变量 ANTHROPIC_API_KEY"
+            "⚠️  DMXAPI_API_KEY 未配置\n"
+            "   请在 config.py 中填写 DMXAPI_API_KEY（图片审核必须使用 Claude）"
         )
 
     # 邮件配置仅在非调试模式下强制检查
