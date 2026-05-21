@@ -31,8 +31,8 @@ web页面生成/
 
 ### 视觉风格
 - **风格**：苹果科技简约风（Apple-like tech minimalism）
-- **配色**：纯黑白为主 + 灰阶过渡
-  - 主背景：`#000000`（深色页面）/ `#ffffff`（浅色页面）
+- **配色**：纯深色为主 + 灰阶过渡（禁止浅色页面）
+  - 主背景：`#000000`（深色页面）
   - 灰阶：`#6e6e73`（正文）/ `#86868b`（辅助）/ `#d2d2d7`（浅色正文）
 - **字体**：系统字体栈（SF Pro Display + SF Pro Text + SF Mono）
 - **装饰**：点阵背景（`radial-gradient`）、细线分隔符
@@ -40,10 +40,10 @@ web页面生成/
 ### 幻灯片结构
 每张幻灯片结构：
 ```html
-<div class="slide [light|gray-gradient|deep-gradient]" id="slide-N">
+<div class="slide" id="slide-N">
     <div class="dot-grid"></div>
     <div class="slide-number">NN / TT</div>
-    <div class="slide-content [centered]">
+    <div class="slide-content centered">
         <div class="label">SECTION · 小节标签</div>
         <h2>标题</h2>
         <div class="line-accent white"></div>
@@ -57,15 +57,15 @@ web页面生成/
 | 组件 | 用途 | 关键 class |
 |------|------|-----------|
 | 封面 | Part 标题页 | `.centered` + `.gradient-text` |
-| 内容页 | 正文页面 | 左侧对齐，默认深色背景 |
-| 浅色页 | 对比/总结 | `.light` class |
-| 对比页 | 两种方案对比 | `.split` 左右分栏 |
-| 表格页 | 数据对比 | `.comparison-table` |
-| 卡片页 | 要点总结 | `.card-grid` + `.card` |
-| 流程页 | 步骤展示 | `.flow-row` + `.flow-node` |
-| 数字页 | 关键数据 | `.stat-row` + `.stat-number` |
-| 金句页 | 核心观点 | `.quote-block` + `blockquote` |
-| 小结页 | 回顾要点 | `.card-grid` 四卡片 + 预告下一章 |
+| 内容页 | 正文页面 | **`.centered`（居中，默认）**，深色背景 |
+| ~~浅色页~~ | ~~对比/总结~~ | **已移除** |
+| 对比页 | 两种方案对比 | `.centered` + `.comparison-list` 居中对比 |
+| 表格页 | 数据对比 | `.centered` + `.comparison-table` |
+| 卡片页 | 要点总结 | `.centered` + `.card-grid` + `.card` |
+| 流程页 | 步骤展示 | `.centered` + `.flow-row` + `.flow-node` |
+| 数字页 | 关键数据 | `.centered` + `.stat-row` + `.stat-number` |
+| 金句页 | 核心观点 | `.centered` + `.quote-block` + `blockquote` |
+| 小结页 | 回顾要点 | `.centered` + `.card-grid` 四卡片 + 预告下一章 |
 
 ### 动画规范
 - 入场动画：`fadeUp`（`translateY(24px) → 0`，600ms ease-out）
@@ -105,7 +105,7 @@ web页面生成/
 
 ### 分隔线
 - 标题后跟：`<div class="line-accent [white]"></div>`
-- 白色背景页面用默认色（`var(--gray-300)`）
+- 所有页面统一使用深色背景，使用 `rgba(255,255,255,0.2)` 色值
 
 ## 工作流程
 
@@ -133,7 +133,8 @@ web页面生成/
 - [ ] 每张幻灯片有唯一的 `id="slide-N"`
 - [ ] `.slide-number` 与实际位置一致
 - [ ] 总页数 `id="total"` 与幻灯片数量一致
-- [ ] 深色页用 `rgba(255,255,255,0.2)` 色值，浅色页用 `rgba(0,0,0,0.2)`
+- [ ] 所有页面统一使用深色背景（`#000000`），不出现浅色页面
+- [ ] 所有 `.slide-content` 使用 `.centered` 居中布局
 - [ ] 所有字号使用 `clamp()` 响应式写法
 - [ ] 动画延迟不超过 720ms（6 层级）
 - [ ] HTML 文件可直接在浏览器中打开演示
