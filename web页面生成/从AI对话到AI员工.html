@@ -204,6 +204,57 @@
             margin: 6px auto;
         }
 
+        /* ===== TABLE OF CONTENTS ===== */
+        .toc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            width: 100%;
+            max-width: 1800px;
+        }
+
+        .toc-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 32px;
+            padding: 44px 48px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .toc-item:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.12);
+        }
+
+        .toc-number {
+            font-family: var(--font-mono);
+            font-size: clamp(44px, 5vw, 64px);
+            font-weight: 700;
+            color: rgba(255,255,255,0.15);
+            line-height: 1;
+        }
+
+        .toc-title {
+            font-family: var(--font-heading);
+            font-size: clamp(30px, 3.2vw, 40px);
+            font-weight: 600;
+            color: var(--white);
+            line-height: 1.3;
+        }
+
+        .toc-sub {
+            font-size: clamp(24px, 2.4vw, 30px);
+            color: var(--gray-400);
+            line-height: 1.4;
+        }
+
+        @media (max-width: 640px) {
+            .toc-grid { grid-template-columns: 1fr; gap: 20px; }
+        }
+
         /* ===== CARDS ===== */
         .card-grid {
             display: grid;
@@ -211,6 +262,25 @@
             gap: 14px;
             width: 100%;
             max-width: 1366px;
+        }
+
+        .card-grid-large {
+            max-width: 1100px !important;
+        }
+
+        .card-large {
+            padding: 40px 32px !important;
+            gap: 16px !important;
+        }
+
+        .card-large h3 {
+            font-size: clamp(24px, 2.5vw, 34px) !important;
+            margin: 0;
+        }
+
+        .card-large p {
+            font-size: clamp(16px, 1.5vw, 20px) !important;
+            margin: 0;
         }
 
         .card {
@@ -296,6 +366,22 @@
             color: var(--white);
             font-weight: 500;
             text-align: center;
+        }
+
+        .comparison-table th:nth-child(4),
+        .comparison-table td:nth-child(4) {
+            background: rgba(80, 200, 120, 0.12);
+            border-left: 2px solid rgba(80, 200, 120, 0.35);
+            border-right: 2px solid rgba(80, 200, 120, 0.35);
+        }
+
+        .comparison-table th:nth-child(4) {
+            color: rgba(80, 200, 120, 0.9);
+            border-top: 2px solid rgba(80, 200, 120, 0.35);
+        }
+
+        .comparison-table tr:last-child td:nth-child(4) {
+            border-bottom: 2px solid rgba(80, 200, 120, 0.35);
         }
 
         .badge {
@@ -510,17 +596,6 @@
             text-align: center;
         }
 
-        /* ===== SLIDE NUMBER BADGE ===== */
-        .slide-number {
-            position: absolute;
-            top: 24px;
-            right: 32px;
-            font-family: var(--font-mono);
-            font-size: 13px;
-            color: rgba(255,255,255,0.2);
-            letter-spacing: 0.1em;
-        }
-
         /* ===== ANIMATIONS ===== */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(24px); }
@@ -584,7 +659,6 @@
             .split-aside { max-width: 100%; }
             .comparison-table { font-size: 11px; }
             .comparison-table th, .comparison-table td { padding: 10px 8px; }
-            .slide-number { top: 20px; right: 20px; }
             .nav-controls { bottom: 20px; gap: 16px; }
             .nav-btn { width: 44px; height: 44px; font-size: 18px; }
             .bullet-list { align-items: flex-start; }
@@ -612,7 +686,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient active" id="slide-1">
         <div class="dot-grid"></div>
-        <div class="slide-number">01 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">分享主题</div>
@@ -684,22 +757,23 @@
                 </div>
             </div>
 
-            <div class="animate-in animate-in-6" style="display:flex; align-items:center; gap: 12px; margin-top: 24px;">
+            <!-- <div class="animate-in animate-in-6" style="display:flex; align-items:center; gap: 12px; margin-top: 24px;">
                 <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:16px;">👤</div>
                 <div style="text-align:left;">
                     <div style="font-size:14px;font-weight:500;color:rgba(255,255,255,0.8);">曾洛镔</div>
                     <div style="font-size:12px;color:rgba(255,255,255,0.4);font-family:var(--font-mono);">vivo · C++ 服务器工程师</div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
+
+
 
     <!-- ═══════════════════════════════════════════════════════ -->
     <!-- SLIDE 2 — Self Introduction                            -->
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-2">
         <div class="dot-grid"></div>
-        <div class="slide-number">02 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">INTRO · 自我介绍</div>
@@ -712,22 +786,64 @@
 
             <ul class="bullet-list animate-in animate-in-4">
                 <li>前 vivo C++ 服务器工程师</li>
-                <li>目前主要做的是投研相关的工作</li>
+                <li>目前有自己的团队，做一些技术相关的工作</li>
             </ul>
 
             <div class="highlight-box animate-in animate-in-5">
-                <p>感谢南希哥的邀请！今天从程序员角度，给大家分享关于 Agent 的思考和实践。</p>
+                <p>感谢南溪哥的邀请！今天从程序员角度，给大家分享关于 Agent 的思考和实践。</p>
             </div>
         </div>
     </div>
 
-    
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- SLIDE 3 — Table of Contents                             -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="slide" id="slide-3">
+        <div class="dot-grid"></div>
+        <div class="slide-content">
+
+            <div class="label animate-in animate-in-1" style="font-size: clamp(16px, 2vw, 24px);">CONTENTS · 目录</div>
+
+            <h2 class="animate-in animate-in-2" style="font-size: clamp(52px, 9vw, 120px);">今天分享什么</h2>
+
+            <div class="line-accent animate-in animate-in-3" style="width: 100px; height: 4px;"></div>
+
+            <div class="toc-grid animate-in animate-in-4">
+
+                <div class="toc-item">
+                    <div class="toc-number">01</div>
+                    <div class="toc-title">从对话到 AI 员工</div>
+                    <div class="toc-sub">Agent 的本质与工具全景</div>
+                </div>
+
+                <div class="toc-item">
+                    <div class="toc-number">02</div>
+                    <div class="toc-title">如何快速上手 Agent</div>
+                    <div class="toc-sub">核心心法 · Skills 生态</div>
+                </div>
+
+                <div class="toc-item">
+                    <div class="toc-number">03</div>
+                    <div class="toc-title">红人素材审核</div>
+                    <div class="toc-sub">AI 审核素材 · 实战演示</div>
+                </div>
+
+                <div class="toc-item">
+                    <div class="toc-number">04</div>
+                    <div class="toc-title">如何组建团队工作流</div>
+                    <div class="toc-sub">Git 沉淀 · 成本优化</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <!-- ═══════════════════════════════════════════════════════ -->
     <!-- SLIDE 31 — AI Dividing Engineers                      -->
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-31">
         <div class="dot-grid"></div>
-        <div class="slide-number">31 / 40</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">TREND · 趋势洞察</div>
@@ -765,7 +881,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-3">
         <div class="dot-grid"></div>
-        <div class="slide-number">03 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">STORY · 第一次相遇</div>
@@ -813,7 +928,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-4">
         <div class="dot-grid"></div>
-        <div class="slide-number">04 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">CORE · Agent 本质</div>
@@ -859,7 +973,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-5">
         <div class="dot-grid"></div>
-        <div class="slide-number">05 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">IMPLICATION · 意义</div>
@@ -899,7 +1012,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-6">
         <div class="dot-grid"></div>
-        <div class="slide-number">06 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">LANDSCAPE · Agent 生态</div>
@@ -989,7 +1101,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-8">
         <div class="dot-grid"></div>
-        <div class="slide-number">08 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">SUMMARY · Part 1 小结</div>
@@ -1041,7 +1152,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-9">
         <div class="dot-grid"></div>
-        <div class="slide-number">09 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">PART 2 · 快速上手指南</div>
@@ -1071,28 +1181,30 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-10">
         <div class="dot-grid"></div>
-        <div class="slide-number">10 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">PROBLEM · 学习门槛</div>
 
             <h2 class="animate-in animate-in-2">
-                Claude 上手：<br>
-                <span class="gradient-text">概念太多，望而却步</span>
+                Cursor：<br>
+                <span class="gradient-text">学习成本低，上手快</span>
             </h2>
-
+            <div class="highlight-box animate-in animate-in-5">
+                <p>纯图形界面操作，小白易上手</p>
+                <p>费用相对较低，20刀/月</p>
+                <p>大部分时间不需要面对黑框框命令行</p>
+                <p>不需要去排查agent的问题</p>
+            </div>
             <div class="line-accent animate-in animate-in-3"></div>
 
             <ul class="bullet-list animate-in animate-in-4">
-                <li>要记忆各种命令和目录结构</li>
+                <!-- <li>要记忆各种命令和目录结构</li>
                 <li>需要了解工作流编排方式</li>
-                <li>黑框框界面有心理距离感</li>
+                <li>黑框框界面有心理距离感</li> -->
                 <li>重点学习一下claude.md和skills</li>
             </ul>
 
-            <div class="highlight-box animate-in animate-in-5">
-                <p><strong style="color:var(--white);">解决方案：Cursor</strong> — 纯图形界面操作，基本满足日常工作流程开发需求</p>
-            </div>
+          
 
             <div class="flow-row animate-in animate-in-6" style="margin-top: 12px;">
                 <div class="flow-node">Claude Code</div>
@@ -1110,50 +1222,12 @@
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <!-- SLIDE 11 — Core Insight: Outcomes vs Commands         -->
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <div class="slide gray-gradient" id="slide-11">
-        <div class="dot-grid"></div>
-        <div class="slide-number">11 / 24</div>
-        <div class="slide-content">
-
-            <div class="label animate-in animate-in-1">INSIGHT · 核心认知</div>
-
-            <h2 class="animate-in animate-in-2">
-                命令不重要，
-                <span class="gradient-text">结果才重要</span>
-            </h2>
-
-            <div class="line-accent animate-in animate-in-3"></div>
-
-            <div class="highlight-box animate-in animate-in-4">
-                <p>对普通人来说，记住 Claude 的各种命令、目录结构、编排方式——<strong style="color:var(--white);">在第一阶段没那么重要</strong>。</p>
-            </div>
-
-            <div class="highlight-box animate-in animate-in-5">
-                <p>了解 Agent 能给我们<strong style="color:var(--white);">完成哪些工作</strong>，达成哪些目的，才是最关键的，也是当下 <strong style="color:var(--white);">ROI 最高</strong> 的事情。</p>
-            </div>
-
-            <div class="stat-row animate-in animate-in-6">
-                <div class="stat-item">
-                    <div class="stat-number">ROI</div>
-                    <div class="stat-label">最高优先级</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" style="opacity: 0.3;">0</div>
-                    <div class="stat-label">命令记忆成本</div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- ═══════════════════════════════════════════════════════ -->
     <!-- SLIDE 12 — Folder = Agent Employee                     -->
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-12">
         <div class="dot-grid"></div>
-        <div class="slide-number">12 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">CONCEPT · 核心理念</div>
@@ -1206,7 +1280,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-15">
         <div class="dot-grid"></div>
-        <div class="slide-number">15 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">SKILLS · 技能系统</div>
@@ -1253,7 +1326,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-16">
         <div class="dot-grid"></div>
-        <div class="slide-number">16 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">SKILLS · 推荐列表</div>
@@ -1315,11 +1387,46 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- SLIDE 11 — Core Insight: Outcomes vs Commands         -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- <div class="slide gray-gradient" id="slide-11">
+        <div class="dot-grid"></div>
+        <div class="slide-content">
+
+            <div class="label animate-in animate-in-1">INSIGHT · 核心认知</div>
+
+            <h2 class="animate-in animate-in-2">
+                命令不重要，
+                <span class="gradient-text">结果才重要</span>
+            </h2>
+
+            <div class="line-accent animate-in animate-in-3"></div>
+
+            <div class="highlight-box animate-in animate-in-4">
+                <p>对普通人来说，记住 Agent 的各种命令、目录结构、编排方式——<strong style="color:var(--white);">在第一阶段没那么重要</strong>。</p>
+            </div>
+
+            <div class="highlight-box animate-in animate-in-5">
+                <p>了解 Agent 能给我们<strong style="color:var(--white);">完成哪些工作</strong>，达成哪些目的，才是最关键的，也是当下 <strong style="color:var(--white);">ROI 最高</strong> 的事情。</p>
+            </div>
+
+            <div class="stat-row animate-in animate-in-6">
+                <div class="stat-item">
+                    <div class="stat-number">ROI</div>
+                    <div class="stat-label">最高优先级</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" style="opacity: 0.3;">0</div>
+                    <div class="stat-label">命令记忆成本</div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <!-- ═══════════════════════════════════════════════════════ -->
     <!-- SLIDE 14 — High Cohesion / Low Coupling               -->
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-14">
         <div class="dot-grid"></div>
-        <div class="slide-number">14 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">PRINCIPLE · 设计原则</div>
@@ -1335,16 +1442,16 @@
                 也就是程序设计中的
             </p>
 
-            <div class="card-grid animate-in animate-in-5" style="max-width: 700px;">
-                <div class="card" style="border-color:rgba(255,255,255,0.12);">
-                    <div style="font-family:var(--font-mono);font-size:clamp(20px,2.5vw,32px);font-weight:700;color:var(--white);letter-spacing:-0.02em;">高内聚</div>
-                    <div style="width:32px;height:2px;background:rgba(255,255,255,0.2);"></div>
-                    <p>每个 Agent 专注做好一件事</p>
+            <div class="card-grid animate-in animate-in-5" style="max-width: 1050px; gap: 21px;">
+                <div class="card" style="border-color:rgba(255,255,255,0.12); padding: 42px 33px;">
+                    <div style="font-family:var(--font-mono);font-size:clamp(30px,3.75vw,48px);font-weight:700;color:var(--white);letter-spacing:-0.02em;">高内聚</div>
+                    <div style="width:48px;height:3px;background:rgba(255,255,255,0.2);"></div>
+                    <p style="font-size: clamp(19.5px, 2.1vw, 25.5px);">每个 Agent 专注做好一件事</p>
                 </div>
-                <div class="card" style="border-color:rgba(255,255,255,0.12);">
-                    <div style="font-family:var(--font-mono);font-size:clamp(20px,2.5vw,32px);font-weight:700;color:var(--white);letter-spacing:-0.02em;">低耦合</div>
-                    <div style="width:32px;height:2px;background:rgba(255,255,255,0.2);"></div>
-                    <p>Agent 之间依赖最小，方便单独修改替换</p>
+                <div class="card" style="border-color:rgba(255,255,255,0.12); padding: 42px 33px;">
+                    <div style="font-family:var(--font-mono);font-size:clamp(30px,3.75vw,48px);font-weight:700;color:var(--white);letter-spacing:-0.02em;">低耦合</div>
+                    <div style="width:48px;height:3px;background:rgba(255,255,255,0.2);"></div>
+                    <p style="font-size: clamp(19.5px, 2.1vw, 25.5px);">Agent 之间依赖最小，方便单独修改替换</p>
                 </div>
             </div>
 
@@ -1367,7 +1474,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-13">
         <div class="dot-grid"></div>
-        <div class="slide-number">13 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">COMPOSITION · 乐高式组装</div>
@@ -1403,7 +1509,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-17">
         <div class="dot-grid"></div>
-        <div class="slide-number">17 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">PHILOSOPHY · 个人感悟</div>
@@ -1435,7 +1540,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-18">
         <div class="dot-grid"></div>
-        <div class="slide-number">18 / 24</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">SUMMARY · Part 2 小结</div>
@@ -1487,7 +1591,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-19">
         <div class="dot-grid"></div>
-        <div class="slide-number">19 / 35</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">PART 3 · DTC 场景案例</div>
@@ -1499,7 +1602,7 @@
             <div class="line-accent animate-in animate-in-3"></div>
 
             <p class="animate-in animate-in-4">
-                从最小可用 Demo 起步，跑通后再逐步演进
+                品牌部的公司运营人员需要审核来自内部设计师和外部红人的各类素材
             </p>
 
             <div class="stat-row animate-in animate-in-5">
@@ -1524,7 +1627,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-20">
         <div class="dot-grid"></div>
-        <div class="slide-number">20 / 35</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">PROBLEM · 痛点分析</div>
@@ -1549,7 +1651,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-21">
         <div class="dot-grid"></div>
-        <div class="slide-number">21 / 35</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">EVOLUTION · 演变历程</div>
@@ -1619,7 +1720,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-22">
         <div class="dot-grid"></div>
-        <div class="slide-number">22 / 35</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">SOLUTION · 两步走方案</div>
@@ -1672,7 +1772,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-23">
         <div class="dot-grid"></div>
-        <div class="slide-number">23 / 35</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">STEP 1 · 轻量 Demo</div>
@@ -1724,7 +1823,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-25">
         <div class="dot-grid"></div>
-        <div class="slide-number">25 / 35</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">RULES · 审核规则库</div>
@@ -1781,7 +1879,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-26">
         <div class="dot-grid"></div>
-        <div class="slide-number">26 / 35</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">MODELS · 模型测试</div>
@@ -1832,7 +1929,7 @@
             </div>
 
             <div class="highlight-box animate-in animate-in-5">
-                <p><strong style="color:var(--white);">综合测试结论：</strong>kimi-2.6 的性价比最优 —— 在满足审核功能的前提下，成本可以压到很低</p>
+                <p><strong style="color:var(--white);">综合测试结论：</strong>kimi-2.6 的性价比最优 —— 在满足审核功能的前提下，成本可以压到比较低</p>
             </div>
         </div>
     </div>
@@ -1842,7 +1939,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-27">
         <div class="dot-grid"></div>
-        <div class="slide-number">27 / 35</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">INSIGHT · 关键心法</div>
@@ -1884,7 +1980,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-24">
         <div class="dot-grid"></div>
-        <div class="slide-number">24 / 35</div>
         <div class="slide-content" style="gap: 16px;">
 
             <div class="label animate-in animate-in-1">STEP 2 · 完整系统</div>
@@ -1914,38 +2009,38 @@
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(80,200,120,0.8)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                     <span style="font-family:var(--font-mono);font-size:14px;color:rgba(80,200,120,0.9);font-weight:600;letter-spacing:0.08em;">扩展方向</span>
                 </div>
-                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1400px;">
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:30px;max-width:2100px;">
                     <div class="card" style="border-color:rgba(80,200,120,0.25);background:rgba(80,200,120,0.04);text-align:left;">
-                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(80,200,120,0.8)" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                            <span style="font-family:var(--font-mono);font-size:15px;color:var(--gray-200);font-weight:600;">商业化 SAAS</span>
+                        <div style="display:flex;align-items:center;gap:15px;margin-bottom:21px;">
+                            <svg width="33" height="33" viewBox="0 0 24 24" fill="none" stroke="rgba(80,200,120,0.8)" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            <span style="font-family:var(--font-mono);font-size:22.5px;color:var(--gray-200);font-weight:600;">商业化 SAAS</span>
                         </div>
-                        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
-                            <li style="font-size:15px;color:var(--gray-300);line-height:1.5;">多品牌、多团队协同</li>
-                            <li style="font-size:15px;color:var(--gray-300);line-height:1.5;">付费订阅等增值服务</li>
-                            <li style="font-size:15px;color:var(--gray-300);line-height:1.5;">审核能力产品化，规模化收益</li>
+                        <ul style="list-style:none;display:flex;flex-direction:column;gap:15px;">
+                            <li style="font-size:22.5px;color:var(--gray-300);line-height:1.5;">多品牌、多团队协同</li>
+                            <li style="font-size:22.5px;color:var(--gray-300);line-height:1.5;">付费订阅等增值服务</li>
+                            <li style="font-size:22.5px;color:var(--gray-300);line-height:1.5;">审核能力产品化，规模化收益</li>
                         </ul>
                     </div>
                     <div class="card" style="border-color:rgba(156,78,255,0.25);background:rgba(156,78,255,0.04);text-align:left;">
-                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(156,78,255,0.8)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                            <span style="font-family:var(--font-mono);font-size:15px;color:var(--gray-200);font-weight:600;">一站式生态</span>
+                        <div style="display:flex;align-items:center;gap:15px;margin-bottom:21px;">
+                            <svg width="33" height="33" viewBox="0 0 24 24" fill="none" stroke="rgba(156,78,255,0.8)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                            <span style="font-family:var(--font-mono);font-size:22.5px;color:var(--gray-200);font-weight:600;">一站式生态</span>
                         </div>
-                        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
-                            <li style="font-size:15px;color:var(--gray-300);line-height:1.5;">对接广告联盟、品牌主</li>
-                            <li style="font-size:15px;color:var(--gray-300);line-height:1.5;">对接内容创作者、KOL</li>
-                            <li style="font-size:15px;color:var(--gray-300);line-height:1.5;">素材审核 + 合规管理全链路</li>
+                        <ul style="list-style:none;display:flex;flex-direction:column;gap:15px;">
+                            <li style="font-size:22.5px;color:var(--gray-300);line-height:1.5;">对接广告联盟、品牌主</li>
+                            <li style="font-size:22.5px;color:var(--gray-300);line-height:1.5;">对接内容创作者、KOL</li>
+                            <li style="font-size:22.5px;color:var(--gray-300);line-height:1.5;">素材审核 + 合规管理全链路</li>
                         </ul>
                     </div>
                     <div class="card" style="border-color:rgba(255,165,78,0.25);background:rgba(255,165,78,0.04);text-align:left;">
-                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,165,78,0.8)" stroke-width="1.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                            <span style="font-family:var(--font-mono);font-size:15px;color:var(--gray-200);font-weight:600;">降本增效</span>
+                        <div style="display:flex;align-items:center;gap:15px;margin-bottom:21px;">
+                            <svg width="33" height="33" viewBox="0 0 24 24" fill="none" stroke="rgba(255,165,78,0.8)" stroke-width="1.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                            <span style="font-family:var(--font-mono);font-size:22.5px;color:var(--gray-200);font-weight:600;">降本增效</span>
                         </div>
-                        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
-                            <li style="font-size:15px;color:var(--gray-300);line-height:1.5;">企业降本增效</li>
-                            <li style="font-size:15px;color:var(--gray-300);line-height:1.5;">提升内容生产效率</li>
-                            <li style="font-size:15px;color:var(--gray-300);line-height:1.5;">提升内容合规效率</li>
+                        <ul style="list-style:none;display:flex;flex-direction:column;gap:15px;">
+                            <li style="font-size:22.5px;color:var(--gray-300);line-height:1.5;">企业降本增效</li>
+                            <li style="font-size:22.5px;color:var(--gray-300);line-height:1.5;">提升内容生产效率</li>
+                            <li style="font-size:22.5px;color:var(--gray-300);line-height:1.5;">提升内容合规效率</li>
                         </ul>
                     </div>
                 </div>
@@ -1958,7 +2053,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-28">
         <div class="dot-grid"></div>
-        <div class="slide-number">28 / 35</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">EFFICIENCY · 开发效率</div>
@@ -1970,28 +2064,28 @@
 
             <div class="line-accent animate-in animate-in-3"></div>
 
-            <div class="card-grid animate-in animate-in-4" style="max-width: 900px;">
-                <div class="card" style="border-color: rgba(255,107,107,0.3);">
-                    <div style="font-family:var(--font-mono);font-size:11px;color:rgba(255,107,107,0.8);margin-bottom:8px;">传统方式</div>
-                    <h3>1-2 周</h3>
-                    <p>程序员 + 美工</p>
-                    <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,107,107,0.1);">
-                        <span style="font-size:20px;color:rgba(255,107,107,0.6);">几千~几万</span>
-                        <span style="font-size:12px;color:var(--gray-500);">/ 项目</span>
+            <div class="card-grid animate-in animate-in-4" style="max-width: 1800px;">
+                <div class="card" style="border-color: rgba(255,107,107,0.3); padding: 44px 48px;">
+                    <div style="font-family:var(--font-mono);font-size:22px;color:rgba(255,107,107,0.8);margin-bottom:16px;">传统方式</div>
+                    <h3 style="font-size: clamp(32px, 4vw, 48px);">1-2 周</h3>
+                    <p style="font-size: clamp(26px, 2.8vw, 34px);">产品经理 + 程序员 + 美工</p>
+                    <div style="margin-top:24px;padding-top:24px;border-top:2px solid rgba(255,107,107,0.1);">
+                        <span style="font-size:40px;color:rgba(255,107,107,0.6);">几千~几万</span>
+                        <span style="font-size:24px;color:var(--gray-500);">/ 项目</span>
                     </div>
                 </div>
-                <div class="card" style="border-color: rgba(80,200,120,0.4);background:rgba(80,200,120,0.05);">
-                    <div style="font-family:var(--font-mono);font-size:11px;color:rgba(80,200,120,0.9);margin-bottom:8px;">AI 方式</div>
-                    <h3>1-2 天</h3>
-                    <p>一个人 + AI</p>
-                    <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(80,200,120,0.1);">
-                        <span style="font-size:20px;color:rgba(80,200,120,0.8);">成本大幅降低</span>
+                <div class="card" style="border-color: rgba(80,200,120,0.4);background:rgba(80,200,120,0.05); padding: 44px 48px;">
+                    <div style="font-family:var(--font-mono);font-size:22px;color:rgba(80,200,120,0.9);margin-bottom:16px;">AI 方式</div>
+                    <h3 style="font-size: clamp(32px, 4vw, 48px);">2-3 天</h3>
+                    <p style="font-size: clamp(26px, 2.8vw, 34px);">一个人 + AI</p>
+                    <div style="margin-top:24px;padding-top:24px;border-top:2px solid rgba(80,200,120,0.1);">
+                        <span style="font-size:40px;color:rgba(80,200,120,0.8);">成本大幅降低</span>
                     </div>
                 </div>
             </div>
 
-            <div class="highlight-box animate-in animate-in-5" style="margin-top: 20px;">
-                <p>AI 在 <strong style="color:var(--white);">5 分钟内</strong> 就跑出了一个 Demo。放以前，光选型、搭框架就要 1-2 小时</p>
+            <div class="highlight-box animate-in animate-in-5" style="margin-top: 40px; font-size: clamp(20px, 2.2vw, 28px);">
+                <p>AI 在 <strong style="color:var(--white);font-size: clamp(22px, 2.4vw, 30px);">5 分钟内</strong> 就跑出了一个 Demo。放以前，光选型、搭框架就要 1 小时</p>
             </div>
         </div>
     </div>
@@ -2001,7 +2095,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-29">
         <div class="dot-grid"></div>
-        <div class="slide-number">29 / 35</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">SUMMARY · Part 3 小结</div>
@@ -2052,7 +2145,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-30">
         <div class="dot-grid"></div>
-        <div class="slide-number">30 / 40</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">PART 4 · 组建团队工作流</div>
@@ -2066,7 +2158,7 @@
 
             <div class="quote-block animate-in animate-in-4">
                 <blockquote>
-                    "学遍最新最强的 AI 工具，不如搭建好一条团队能用的工作流"
+                    "如何解决AI焦虑：学遍最新最强的 AI 工具，不如搭建好一条团队能用的工作流"
                 </blockquote>
             </div>
         </div>
@@ -2078,7 +2170,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-32">
         <div class="dot-grid"></div>
-        <div class="slide-number">32 / 40</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">VALUE · 复利效应</div>
@@ -2145,7 +2236,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-33">
         <div class="dot-grid"></div>
-        <div class="slide-number">33 / 40</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">INFRASTRUCTURE · 基础设施</div>
@@ -2157,19 +2247,19 @@
 
             <div class="line-accent animate-in animate-in-3"></div>
 
-            <div class="card-grid animate-in animate-in-4" style="max-width: 900px;">
-                <div class="card">
-                    <div style="font-family:var(--font-mono);font-size:12px;color:var(--gray-400);">①</div>
+            <div class="card-grid card-grid-large animate-in animate-in-4" style="max-width: 1100px;">
+                <div class="card card-large">
+                    <div style="font-family:var(--font-mono);font-size:14px;color:var(--gray-400);">①</div>
                     <h3>版本控制</h3>
                     <p>记录每一步探索，新人不必重走弯路</p>
                 </div>
-                <div class="card">
-                    <div style="font-family:var(--font-mono);font-size:12px;color:var(--gray-400);">②</div>
+                <div class="card card-large">
+                    <div style="font-family:var(--font-mono);font-size:14px;color:var(--gray-400);">②</div>
                     <h3>分支隔离</h3>
                     <p>让实验安全发生，成功了合并，失败重来</p>
                 </div>
-                <div class="card">
-                    <div style="font-family:var(--font-mono);font-size:12px;color:var(--gray-400);">③</div>
+                <div class="card card-large">
+                    <div style="font-family:var(--font-mono);font-size:14px;color:var(--gray-400);">③</div>
                     <h3>协作复用</h3>
                     <p>三人互不干扰，却能互相取用</p>
                 </div>
@@ -2180,9 +2270,8 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <!-- SLIDE 34 — Migration Path                             -->
     <!-- ═══════════════════════════════════════════════════════ -->
-    <div class="slide gray-gradient" id="slide-34">
+    <!-- <div class="slide gray-gradient" id="slide-34">
         <div class="dot-grid"></div>
-        <div class="slide-number">34 / 40</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">ACTION · 行动路径</div>
@@ -2221,6 +2310,51 @@
                 <p><strong style="color:var(--white);">迁移最大的障碍不是技术，而是习惯。</strong> 让团队养成"做完工作流就提交"的习惯。</p>
             </div>
         </div>
+    </div> -->
+
+    <div class="slide" id="slide-34-token-pricing">
+        <div class="dot-grid"></div>
+        <div class="slide-content">
+
+            <div class="label animate-in animate-in-1">PRICING · 计价模式</div>
+
+            <h2 class="animate-in animate-in-2">
+                模型 Token 的计价模式<br>
+                <span class="gradient-text">两种主流方式</span>
+            </h2>
+
+            <div class="line-accent animate-in animate-in-3"></div>
+
+            <div class="card-grid animate-in animate-in-4" style="max-width: 1100px;">
+                <div class="card" style="border-color: rgba(80,200,120,0.4); background: rgba(80,200,120,0.04);">
+                    <div style="font-family:var(--font-mono);font-size:22px;color:rgba(80,200,120,0.85);margin-bottom:12px;">方式一：月度订阅制</div>
+                    <h3 style="font-size: clamp(30px, 3vw, 42px);margin-bottom:10px;">包月限量</h3>
+                    <ul style="padding-left:1em; font-size: 18px; color: var(--gray-200); line-height:1.7;">
+                        <li>按订阅套餐，每月支付固定费用</li>
+                        <li>常见于知名平台（如 Cursor、Claude Code）</li>
+                        <li>适合有稳定高频需求的用户</li>
+                        <li>优点：预测性好，预算可控</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-color: rgba(156,78,255,0.38); background: rgba(156,78,255,0.045);">
+                    <div style="font-family:var(--font-mono);font-size:22px;color:rgba(156,78,255,0.8);margin-bottom:12px;">方式二：按用量计费</div>
+                    <h3 style="font-size: clamp(30px, 3vw, 42px);margin-bottom:10px;">按 token 数量计价</h3>
+                    <ul style="padding-left:1em; font-size: 18px; color: var(--gray-200); line-height:1.7;">
+                        <li>根据实际消耗的 token 数量计费（如 1M tokens 若干元）</li>
+                        <li>适用于 API 调用和自托管部署场景</li>
+                        <li>灵活精准，适合不确定/低频使用</li>
+                        <li>优点：按需付费，不浪费配额</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box animate-in animate-in-5" style="margin-top: 36px; font-size: clamp(18px, 2vw, 24px);">
+                <p>
+                    <strong style="color:var(--white);font-size: clamp(20px, 2.2vw, 28px);">选择建议：</strong>
+                    <span style="color:var(--gray-200);">如果你每天高频写作或开发，优选月度订阅；如果只是偶尔调用，则选择按量计费更灵活实惠。</span>
+                </p>
+            </div>
+        </div>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════ -->
@@ -2228,13 +2362,12 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-35">
         <div class="dot-grid"></div>
-        <div class="slide-number">35 / 40</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">COST · 成本优化</div>
 
             <h2 class="animate-in animate-in-2">
-                Token 成本<br>
+                海外模型 Token 成本<br>
                 <span class="gradient-text">优化指南</span>
             </h2>
 
@@ -2246,27 +2379,27 @@
                 </blockquote>
             </div>
 
-            <div class="card-grid animate-in animate-in-5" style="max-width: 1000px; margin-top: 16px;">
-                <div class="card">
-                    <div class="card-icon" style="background: linear-gradient(135deg, rgba(80,200,120,0.15), rgba(80,200,120,0.05));">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <div class="card-grid animate-in animate-in-5" style="max-width: 1500px; margin-top: 24px; gap: 21px;">
+                <div class="card" style="padding: 42px 33px;">
+                    <div class="card-icon" style="width:90px;height:90px;border-radius:21px;background: linear-gradient(135deg, rgba(80,200,120,0.15), rgba(80,200,120,0.05));">
+                        <svg width="39" height="39" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                     </div>
-                    <h3>首选中转站</h3>
-                    <p>价格只有官方 20%-50%，IP 稳定性要求更低</p>
+                    <h3 style="font-size: clamp(24px, 2.7vw, 33px);">首选中转站</h3>
+                    <p style="font-size: clamp(19.5px, 2.1vw, 25.5px);">价格只有官方 50%-70%</p>
                 </div>
-                <div class="card">
-                    <div class="card-icon" style="background: linear-gradient(135deg, rgba(78,180,255,0.15), rgba(78,180,255,0.05));">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <div class="card" style="padding: 42px 33px;">
+                    <div class="card-icon" style="width:90px;height:90px;border-radius:21px;background: linear-gradient(135deg, rgba(78,180,255,0.15), rgba(78,180,255,0.05));">
+                        <svg width="39" height="39" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                     </div>
-                    <h3>避免封号风险</h3>
-                    <p>国内 IP 频繁变动易被识别为风险账号</p>
+                    <h3 style="font-size: clamp(24px, 2.7vw, 33px);">避免封号风险</h3>
+                    <p style="font-size: clamp(19.5px, 2.1vw, 25.5px);">国内 IP 频繁变动易被识别为风险账号</p>
                 </div>
-                <div class="card">
-                    <div class="card-icon" style="background: linear-gradient(135deg, rgba(255,165,78,0.15), rgba(255,165,78,0.05));">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
+                <div class="card" style="padding: 42px 33px;">
+                    <div class="card-icon" style="width:90px;height:90px;border-radius:21px;background: linear-gradient(135deg, rgba(255,165,78,0.15), rgba(255,165,78,0.05));">
+                        <svg width="39" height="39" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
                     </div>
-                    <h3>选择更多</h3>
-                    <p>可用尽市面上各类模型，可选择性大</p>
+                    <h3 style="font-size: clamp(24px, 2.7vw, 33px);">选择更多</h3>
+                    <p style="font-size: clamp(19.5px, 2.1vw, 25.5px);">可用尽市面上各类模型，可选择性大</p>
                 </div>
             </div>
         </div>
@@ -2277,14 +2410,12 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-36">
         <div class="dot-grid"></div>
-        <div class="slide-number">36 / 40</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">MODELS · 国内模型</div>
 
             <h2 class="animate-in animate-in-2">
-                国内大模型方案<br>
-                <span class="gradient-text">性价比极高的替代选择</span>
+                国内大模型Token方案<br>
             </h2>
 
             <div class="line-accent animate-in animate-in-3"></div>
@@ -2339,14 +2470,12 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-37">
         <div class="dot-grid"></div>
-        <div class="slide-number">37 / 40</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">OPTIMIZE · 降本杠杆</div>
 
             <h2 class="animate-in animate-in-2">
-                模型的选择<br>
-                <span class="gradient-text">节省 40-60%</span>
+                不同场景该选择什么模型？<br>
             </h2>
 
             <div class="line-accent animate-in animate-in-3"></div>
@@ -2385,14 +2514,12 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-38">
         <div class="dot-grid"></div>
-        <div class="slide-number">38 / 40</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">SAVE · 省钱手段</div>
 
             <h2 class="animate-in animate-in-2">
-                Prompt 缓存<br>
-                <span class="gradient-text">节省 50-90%</span>
+                提示词 缓存<br>
             </h2>
 
             <div class="line-accent animate-in animate-in-3"></div>
@@ -2437,7 +2564,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide" id="slide-39">
         <div class="dot-grid"></div>
-        <div class="slide-number">39 / 40</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">HIDDEN · 隐形杀手</div>
@@ -2493,7 +2619,6 @@
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="slide gray-gradient" id="slide-40">
         <div class="dot-grid"></div>
-        <div class="slide-number">40 / 40</div>
         <div class="slide-content">
 
             <div class="label animate-in animate-in-1">SUMMARY · Part 4 小结</div>
@@ -2504,26 +2629,26 @@
 
             <div class="line-accent animate-in animate-in-3"></div>
 
-            <div class="card-grid animate-in animate-in-4">
-                <div class="card">
-                    <div style="font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--white);opacity:0.2;">01</div>
-                    <h3>团队工作流是复利资产</h3>
-                    <p>写一次，长期复用，团队工具库沉淀</p>
+            <div class="card-grid animate-in animate-in-4" style="gap: 21px;">
+                <div class="card" style="padding: 42px 33px;">
+                    <div style="font-family:var(--font-mono);font-size:30px;font-weight:700;color:var(--white);opacity:0.2;">01</div>
+                    <h3 style="font-size: clamp(24px, 2.7vw, 33px);">团队工作流是复利资产</h3>
+                    <p style="font-size: clamp(19.5px, 2.1vw, 25.5px);">写一次，长期复用，团队工具库沉淀</p>
                 </div>
-                <div class="card">
-                    <div style="font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--white);opacity:0.2;">02</div>
-                    <h3>Git 是协作骨架</h3>
-                    <p>版本控制、分支隔离、协作复用</p>
+                <div class="card" style="padding: 42px 33px;">
+                    <div style="font-family:var(--font-mono);font-size:30px;font-weight:700;color:var(--white);opacity:0.2;">02</div>
+                    <h3 style="font-size: clamp(24px, 2.7vw, 33px);">Git 是协作骨架</h3>
+                    <p style="font-size: clamp(19.5px, 2.1vw, 25.5px);">版本控制、分支隔离、协作复用</p>
                 </div>
-                <div class="card">
-                    <div style="font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--white);opacity:0.2;">03</div>
-                    <h3>分级路由 + 缓存降本</h3>
-                    <p>节省 40-60%，上下文是隐形杀手</p>
+                <div class="card" style="padding: 42px 33px;">
+                    <div style="font-family:var(--font-mono);font-size:30px;font-weight:700;color:var(--white);opacity:0.2;">03</div>
+                    <h3 style="font-size: clamp(24px, 2.7vw, 33px);">分级路由 + 缓存降本</h3>
+                    <p style="font-size: clamp(19.5px, 2.1vw, 25.5px);">节省 40-60%，上下文是隐形杀手</p>
                 </div>
-                <div class="card">
-                    <div style="font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--white);opacity:0.2;">04</div>
-                    <h3>国内模型性价比高</h3>
-                    <p>DeepSeek ¥1/百万起，按需选择</p>
+                <div class="card" style="padding: 42px 33px;">
+                    <div style="font-family:var(--font-mono);font-size:30px;font-weight:700;color:var(--white);opacity:0.2;">04</div>
+                    <h3 style="font-size: clamp(24px, 2.7vw, 33px);">国内模型性价比高</h3>
+                    <p style="font-size: clamp(19.5px, 2.1vw, 25.5px);">DeepSeek ¥1/百万起，按需选择</p>
                 </div>
             </div>
 
@@ -2532,6 +2657,24 @@
                     <span style="font-size: clamp(12px,1.3vw,16px); color: var(--gray-400);">感谢聆听</span>
                 </div>
             </div>
+        </div>
+    </div>
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- SLIDE 41 — WeChat QR Code 联系方式                     -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="slide gray-gradient" id="slide-41">
+        <div class="dot-grid"></div>
+        <div class="slide-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px;">
+            <div class="label animate-in animate-in-1">CONTACT · 联系方式</div>
+
+            <div class="line-accent animate-in animate-in-3" style="margin-bottom: 32px;"></div>
+            <div class="animate-in animate-in-4" style="display: flex; flex-direction: column; align-items: center;">
+                <img 
+                    src="Snipaste_2026-05-23_11-34-05.png" 
+                    alt="微信二维码" 
+                    style="width: 460px; height: 460px; object-fit: cover; border-radius: 36px; box-shadow: 0 12px 96px rgba(0,0,0,0.16); background: #fff; border: 4.5px solid rgba(255,255,255,0.14);"/>
+            </div>
+   
         </div>
     </div>
 
